@@ -38,7 +38,7 @@ namespace ControleDeMedicamentos.ConsoleApp
             return listaRegistros;
         }
 
-        public Entidade SelecionarId(int id)
+        public virtual Entidade SelecionarId(int id)
         {
             Entidade entidade = null;
 
@@ -51,6 +51,11 @@ namespace ControleDeMedicamentos.ConsoleApp
                 }
             }
             return entidade;
+        }
+
+        public bool TemRegistros()
+        {
+            return listaRegistros.Count > 0;
         }
     }
 }

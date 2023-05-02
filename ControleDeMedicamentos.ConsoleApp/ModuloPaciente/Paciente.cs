@@ -1,4 +1,6 @@
-﻿namespace ControleDeMedicamentos.ConsoleApp.ModuloPaciente
+﻿using System.Collections;
+
+namespace ControleDeMedicamentos.ConsoleApp.ModuloPaciente
 {
     public class Paciente : Entidade
     {
@@ -26,6 +28,16 @@
             telefone = paciente.telefone;
             endereco = paciente.endereco;
 
+        }
+
+        public override ArrayList Validar()
+        {
+            ArrayList erros = new ArrayList();
+
+            if (string.IsNullOrEmpty(nome.Trim()))
+                erros.Add("O campo \"nome\" é obrigatório");
+
+            return erros;
         }
     }
 }

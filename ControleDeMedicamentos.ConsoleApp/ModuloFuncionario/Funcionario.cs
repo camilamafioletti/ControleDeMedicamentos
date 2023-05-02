@@ -1,4 +1,6 @@
-﻿namespace ControleDeMedicamentos.ConsoleApp.ModuloFuncionario
+﻿using System.Collections;
+
+namespace ControleDeMedicamentos.ConsoleApp.ModuloFuncionario
 {
     public class Funcionario : Entidade
     {
@@ -24,6 +26,16 @@
             cpf = funcionario.cpf;
             telefone = funcionario.telefone;
             endereco = funcionario.endereco;
+        }
+
+        public override ArrayList Validar()
+        {
+            ArrayList erros = new ArrayList();
+
+            if (string.IsNullOrEmpty(nome.Trim()))
+                erros.Add("O campo \"nome\" é obrigatório");
+
+            return erros;
         }
     }
 }

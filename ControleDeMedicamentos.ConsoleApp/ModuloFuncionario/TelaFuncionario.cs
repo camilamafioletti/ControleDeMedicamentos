@@ -5,46 +5,16 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloFuncionario
 {
     public class TelaFuncionario : Tela
     {
-        public RepositorioFuncionario repositorioFuncionario = null;
+        private RepositorioFuncionario repositorioFuncionario = null;
 
-        public string ApresentarMenuFuncionario()
+        public TelaFuncionario(RepositorioFuncionario repositorioFuncionario)
         {
-            Console.Clear();
-
-            Console.WriteLine("(1) Adicionar funcionario");
-            Console.WriteLine("(2) Editar funcionario");
-            Console.WriteLine("(3) Visualizar funcionario");
-            Console.WriteLine("(4) Excluir funcionario");
-            Console.WriteLine("(V) Voltar ao menu ");
-            Console.Write("\nOpção:  ");
-
-            string opcaoMenu = Console.ReadLine();
-
-            return opcaoMenu;
+            repositorio = repositorioFuncionario;
+            this.repositorioFuncionario = repositorioFuncionario;
         }
 
-        public void InserirNovoFuncionario()
+        protected override void MostrarTabela(ArrayList listaFuncionarios)
         {
-            Funcionario novoFuncionario = ObterFuncionario();
-
-            repositorioFuncionario.Criar(novoFuncionario);
-
-            Mensagem("Funcionario criado com sucesso!", ConsoleColor.Green);
-        }
-
-        public void EditarFuncionario()
-        {
-            ListarFuncionario();
-            int idSelecionado = ReceberIdFuncionario();
-            Funcionario funcionarioAtualizado = ObterFuncionario();
-
-            repositorioFuncionario.Editar(idSelecionado, funcionarioAtualizado);
-            Mensagem("Sucesso!", ConsoleColor.Green);
-        }
-
-        public void ListarFuncionario()
-        {
-            ArrayList listaFuncionarios = repositorioFuncionario.SelecionarTodos();
 
             Console.Clear();
             Console.WriteLine("Funcionarios registrados:");
@@ -54,12 +24,6 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloFuncionario
             Console.WriteLine("----------------------------------------------------------");
             Console.ResetColor();
 
-            if (listaFuncionarios.Count == 0)
-            {
-                Mensagem("Nenhum funcionario registrado!", ConsoleColor.DarkRed);
-                return;
-            }
-
             foreach (Funcionario funcionario in listaFuncionarios)
             {
                 Console.WriteLine("|{0,-3}|{1,-11}|{2,-13}|{3,-11}|{4,-14}|", funcionario.id, funcionario.nome, funcionario.cpf, funcionario.telefone, funcionario.endereco);
@@ -68,38 +32,9 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloFuncionario
             Console.ReadKey();
         }
 
-        public void DeletarFuncionario()
+        protected override Entidade ObterRegistro()
         {
-            ListarFuncionario();
-            int idSelecionado = ReceberIdFuncionario();
-            repositorioFuncionario.Deletar(idSelecionado);
-            Mensagem("Funcionario excluído com sucesso!", ConsoleColor.Green);
-        }
 
-        public int ReceberIdFuncionario()
-        {
-            bool idInvalido;
-            int id;
-            do
-            {
-                Console.Write("Digite o id do funcionario: ");
-                id = int.Parse(Console.ReadLine());
-
-                idInvalido = repositorioFuncionario.SelecionarId(id) == null;
-
-                if (idInvalido)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("id inválido, tente novamente");
-                    Console.ResetColor();
-                }
-            } while (idInvalido);
-
-            return id;
-        }
-
-        public Funcionario ObterFuncionario()
-        {
             Console.Write("Informe o nome do funcionario: ");
             string nome = Console.ReadLine();
 

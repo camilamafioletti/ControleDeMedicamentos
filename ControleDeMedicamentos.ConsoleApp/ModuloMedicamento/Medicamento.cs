@@ -12,6 +12,8 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
         public Fornecedor fornecedor;
         public ArrayList historicoRequisicoes;
 
+        public int quantidadeRequisicoesSaida;
+
         public Medicamento(int id, string nomeMedicamento, string descricao, int qntdDisponivel, int qntdLimite, Fornecedor fornecedor)
         {
             this.id = id;
@@ -40,6 +42,22 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
         public void SomarQntd(int qntdMedicamento)
         {
             qntdDisponivel = qntdDisponivel + qntdMedicamento;
+        }
+
+        public override ArrayList Validar()
+        {
+            ArrayList erros = new ArrayList();
+
+            if (string.IsNullOrEmpty(nomeMedicamento.Trim()))
+                erros.Add("O campo \"nome\" é obrigatório");
+
+            if (fornecedor == null)
+                erros.Add("O campo \"fornecedor\" é obrigatório");
+
+            if (qntdDisponivel < 0)
+                erros.Add("O campo \"quantidade\" não pode ser menor que 0");
+
+            return erros;
         }
     }
 }

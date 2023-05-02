@@ -8,14 +8,25 @@ using ControleDeMedicamentos.ConsoleApp.ModuloRequisicao;
 
 namespace ControleDeMedicamentos.ConsoleApp
 {
-    public class Menus : Tela
+    public class Menus
     {
-        public TelaPaciente telaPaciente = null;
-        public TelaMedicamento telaMedicamento = null;
-        public TelaFornecedor telaFornecedor = null;
-        public TelaFuncionario telaFuncionario = null;
-        public TelaRequisicao telaRequisicao = null;
-        public TelaAquisicao telaAquisicao = null;
+        private TelaPaciente telaPaciente = null;
+        private TelaMedicamento telaMedicamento = null;
+        private TelaFornecedor telaFornecedor = null;
+        private TelaFuncionario telaFuncionario = null;
+        private TelaRequisicao telaRequisicao = null;
+        private TelaAquisicao telaAquisicao = null;
+
+        public Menus(TelaPaciente telaPaciente, TelaMedicamento telaMedicamento, TelaFornecedor telaFornecedor, TelaFuncionario telaFuncionario, TelaRequisicao telaRequisicao, TelaAquisicao telaAquisicao)
+        {
+            this.telaPaciente = telaPaciente;
+            this.telaMedicamento = telaMedicamento;
+            this.telaFornecedor = telaFornecedor;
+            this.telaFuncionario = telaFuncionario;
+            this.telaRequisicao = telaRequisicao;
+            this.telaAquisicao = telaAquisicao;
+        }
+
         public void MenuPrincipal()
         {
             while (true)
@@ -49,7 +60,7 @@ namespace ControleDeMedicamentos.ConsoleApp
                     case "5": MenuRequisicao(); break;
                     case "6": MenuAquisicao(); break;
 
-                    default: Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
+                    default: Tela.Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
                 }
             }
         }
@@ -58,7 +69,7 @@ namespace ControleDeMedicamentos.ConsoleApp
         {
             while (true)
             {
-                string opcaoMenu = telaPaciente.ApresentarMenuPaciente();
+                string opcaoMenu = telaPaciente.ApresentarMenu();
 
                 if (opcaoMenu.ToUpper() == "V")
                 {
@@ -68,12 +79,12 @@ namespace ControleDeMedicamentos.ConsoleApp
 
                 switch (opcaoMenu.ToUpper())
                 {
-                    case "1": telaPaciente.InserirNovoPaciente(); break;
-                    case "2": telaPaciente.EditarPaciente(); break;
-                    case "3": telaPaciente.ListarPaciente(); break;
-                    case "4": telaPaciente.DeletarPaciente(); break;
+                    case "1": telaPaciente.InserirNovoRegistro(); break;
+                    case "2": telaPaciente.EditarRegistro(); break;
+                    case "3": telaPaciente.VisualizarRegistros(); break;
+                    case "4": telaPaciente.DeletarRegistro(); break;
 
-                    default: Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
+                    default: Tela.Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
                 }
             }
         }
@@ -82,7 +93,7 @@ namespace ControleDeMedicamentos.ConsoleApp
         {
             while (true)
             {
-                string opcaoMenu = telaMedicamento.ApresentarMenuMedicamento();
+                string opcaoMenu = telaMedicamento.ApresentarMenu();
 
                 if (opcaoMenu.ToUpper() == "V")
                 {
@@ -92,11 +103,12 @@ namespace ControleDeMedicamentos.ConsoleApp
 
                 switch (opcaoMenu.ToUpper())
                 {
-                    case "1": telaMedicamento.InserirNovoMedicamento(); break;
-                    case "2": telaMedicamento.ListarMedicamento(); break;
-                    case "3": telaMedicamento.ListarRelatorioMedicamento(); break;
+                    case "1": telaMedicamento.InserirNovoRegistro(); break;
+                    case "2": telaMedicamento.VisualizarRegistros(); break;
+                    case "3": telaMedicamento.ListarRelatorioMedicamentoEmFalta(); break;
+                    case "4": telaMedicamento.VisualizarMedicamentosMaisRetirados(); break;
 
-                    default: Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
+                    default: Tela.Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
                 }
             }
         }
@@ -105,7 +117,7 @@ namespace ControleDeMedicamentos.ConsoleApp
         {
             while (true)
             {
-                string opcaoMenu = telaFuncionario.ApresentarMenuFuncionario();
+                string opcaoMenu = telaFuncionario.ApresentarMenu();
 
                 if (opcaoMenu.ToUpper() == "V")
                 {
@@ -115,12 +127,12 @@ namespace ControleDeMedicamentos.ConsoleApp
 
                 switch (opcaoMenu.ToUpper())
                 {
-                    case "1": telaFuncionario.InserirNovoFuncionario(); break;
-                    case "2": telaFuncionario.EditarFuncionario(); break;
-                    case "3": telaFuncionario.ListarFuncionario(); break;
-                    case "4": telaFuncionario.DeletarFuncionario(); break;
+                    case "1": telaFuncionario.InserirNovoRegistro(); break;
+                    case "2": telaFuncionario.EditarRegistro(); break;
+                    case "3": telaFuncionario.VisualizarRegistros(); break;
+                    case "4": telaFuncionario.DeletarRegistro(); break;
 
-                    default: Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
+                    default: Tela.Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
                 }
             }
         }
@@ -129,7 +141,7 @@ namespace ControleDeMedicamentos.ConsoleApp
         {
             while (true)
             {
-                string opcaoMenu = telaFornecedor.ApresentarMenuFornecedor();
+                string opcaoMenu = telaFornecedor.ApresentarMenu();
 
                 if (opcaoMenu.ToUpper() == "V")
                 {
@@ -139,12 +151,12 @@ namespace ControleDeMedicamentos.ConsoleApp
 
                 switch (opcaoMenu.ToUpper())
                 {
-                    case "1": telaFornecedor.InserirNovoFornecedor(); break;
-                    case "2": telaFornecedor.EditarFornecedor(); break;
-                    case "3": telaFornecedor.ListarFornecedor(); break;
-                    case "4": telaFornecedor.DeletarFornecedor(); break;
+                    case "1": telaFornecedor.InserirNovoRegistro(); break;
+                    case "2": telaFornecedor.EditarRegistro(); break;
+                    case "3": telaFornecedor.VisualizarRegistros(); break;
+                    case "4": telaFornecedor.DeletarRegistro(); break;
 
-                    default: Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
+                    default: Tela.Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
                 }
             }
         }
@@ -153,7 +165,7 @@ namespace ControleDeMedicamentos.ConsoleApp
         {
             while (true)
             {
-                string opcaoMenu = telaRequisicao.ApresentarMenuRequisicao();
+                string opcaoMenu = telaRequisicao.ApresentarMenu();
 
                 if (opcaoMenu.ToUpper() == "V")
                 {
@@ -163,10 +175,10 @@ namespace ControleDeMedicamentos.ConsoleApp
 
                 switch (opcaoMenu.ToUpper())
                 {
-                    case "1": telaRequisicao.ObterRequisicao(); break;
-                    case "2": telaRequisicao.ListarRequisicao(); break;
+                    case "1": telaRequisicao.InserirNovoRegistro(); break;
+                    case "2": telaRequisicao.VisualizarRegistros(); break;
 
-                    default: Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
+                    default: Tela.Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
                 }
             }
         }
@@ -175,7 +187,7 @@ namespace ControleDeMedicamentos.ConsoleApp
         {
             while (true)
             {
-                string opcaoMenu = telaAquisicao.ApresentarMenuAquisicao();
+                string opcaoMenu = telaAquisicao.ApresentarMenu();
 
                 if (opcaoMenu.ToUpper() == "V")
                 {
@@ -185,10 +197,10 @@ namespace ControleDeMedicamentos.ConsoleApp
 
                 switch (opcaoMenu.ToUpper())
                 {
-                    case "1": telaAquisicao.ObterAquisicao(); break;
-                    case "2": telaAquisicao.ListarAquisicao(); break;
+                    case "1": telaAquisicao.InserirNovoRegistro(); break;
+                    case "2": telaAquisicao.VisualizarRegistros(); break;
 
-                    default: Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
+                    default: Tela.Mensagem("\nopção inválida \n", ConsoleColor.Red); break;
                 }
             }
         }

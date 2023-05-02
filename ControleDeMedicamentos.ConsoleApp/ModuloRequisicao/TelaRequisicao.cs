@@ -1,6 +1,4 @@
-﻿using ControleDeMedicamentos.ConsoleApp;
-using ControleDeMedicamentos.ConsoleApp.ModuloFornecedor;
-using ControleDeMedicamentos.ConsoleApp.ModuloFuncionario;
+﻿using ControleDeMedicamentos.ConsoleApp.ModuloFuncionario;
 using ControleDeMedicamentos.ConsoleApp.ModuloMedicamento;
 using ControleDeMedicamentos.ConsoleApp.ModuloPaciente;
 using System.Collections;
@@ -10,12 +8,59 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloRequisicao
     public class TelaRequisicao : Tela
     {
 
-        public RepositorioRequisicao repositorioRequisicao = null;
-        public RepositorioPaciente repositorioPaciente = null;
-        public RepositorioMedicamento repositorioMedicamento = null;
-        public RepositorioFuncionario repositorioFuncionario = null;
+        private RepositorioRequisicao repositorioRequisicao = null;
+        private RepositorioPaciente repositorioPaciente = null;
+        private RepositorioMedicamento repositorioMedicamento = null;
+        private RepositorioFuncionario repositorioFuncionario = null;
 
-        public string ApresentarMenuRequisicao()
+        public TelaRequisicao(RepositorioRequisicao repositorioRequisicao, RepositorioPaciente repositorioPaciente, RepositorioMedicamento repositorioMedicamento, RepositorioFuncionario repositorioFuncionario)
+        {
+            repositorio = repositorioRequisicao;
+            this.repositorioRequisicao = repositorioRequisicao;
+            this.repositorioPaciente = repositorioPaciente;
+            this.repositorioMedicamento = repositorioMedicamento;
+            this.repositorioFuncionario = repositorioFuncionario;
+        }
+
+        public override void InserirNovoRegistro()
+        {
+            bool temFuncionarios = repositorioFuncionario.TemRegistros();
+
+            if (temFuncionarios == false)
+            {
+                Mensagem("Cadastre ao menos um funcionário para cadastrar requisições de saída", ConsoleColor.DarkYellow);
+                return;
+            }
+
+            bool temMedicamentos = repositorioMedicamento.TemRegistros();
+
+            if (temMedicamentos == false)
+            {
+                Mensagem("Cadastre ao menos um medicamento para cadastrar requisições de saída", ConsoleColor.DarkYellow);
+                return;
+            }
+
+            bool temPacientes = repositorioPaciente.TemRegistros();
+
+            if (temPacientes == false)
+            {
+                Mensagem("Cadastre ao menos um paciente para cadastrar requisições de saída", ConsoleColor.DarkYellow);
+                return;
+            }
+
+            Requisicao registro = (Requisicao)ObterRegistro();
+
+            if (ValidarErrosDeValidacao(registro))
+            {
+                return;
+            }
+
+            repositorio.Criar(registro);
+
+            Mensagem("Registro inserido com sucesso!", ConsoleColor.Green);
+        }
+
+        public override string ApresentarMenu()
         {
             Console.Clear();
 
@@ -29,17 +74,8 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloRequisicao
             return opcaoMenu;
         }
 
-        public void InserirNovaRequisicao()
+        protected override void MostrarTabela(ArrayList listaRequisicao)
         {
-            Requisicao novaRequisicao = ObterRequisicao();
-
-            repositorioRequisicao.Criar(novaRequisicao);
-
-            Mensagem("Medicamento criado com sucesso!", ConsoleColor.Green);
-        }
-        public void ListarRequisicao()
-        {
-            ArrayList listaRequisicao = repositorioRequisicao.SelecionarTodos();
 
             Console.Clear();
             Console.WriteLine("Histórico de requisições:");
@@ -49,11 +85,6 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloRequisicao
             Console.WriteLine("-----------------------------------------------------------------------------------");
             Console.ResetColor();
 
-            if (listaRequisicao.Count == 0)
-            {
-                Mensagem("Nenhuma requisição registrada!", ConsoleColor.DarkRed);
-                return;
-            }
 
             foreach (Requisicao reposicao in listaRequisicao)
             {
@@ -63,29 +94,7 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloRequisicao
             Console.ReadKey();
         }
 
-        public int ReceberIdAquisicao()
-        {
-            bool idInvalido;
-            int id;
-            do
-            {
-                Console.Write("Digite o id da aquisicao: ");
-                id = int.Parse(Console.ReadLine());
-
-                idInvalido = repositorioRequisicao.SelecionarId(id) == null;
-
-                if (idInvalido)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("id inválido, tente novamente");
-                    Console.ResetColor();
-                }
-            } while (idInvalido);
-
-            return id;
-        }
-
-        public Requisicao ObterRequisicao()
+        protected override Entidade ObterRegistro()
         {
             Console.Write("Informe o id do paciente: ");
             int idPaciente = int.Parse(Console.ReadLine());
@@ -97,7 +106,7 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloRequisicao
             int idFuncionario = int.Parse(Console.ReadLine());
 
             Console.Write("Informe a data da requisição: ");
-            int dataRequisicao = int.Parse(Console.ReadLine());
+            DateTime dataRequisicao = DateTime.Parse(Console.ReadLine());
 
             Console.Write("Informe a quantidade de medicamento: ");
             int qntdMedicamento = int.Parse(Console.ReadLine());

@@ -4,6 +4,7 @@ using ControleDeMedicamentos.ConsoleApp.ModuloFuncionario;
 using ControleDeMedicamentos.ConsoleApp.ModuloMedicamento;
 using ControleDeMedicamentos.ConsoleApp.ModuloPaciente;
 using ControleDeMedicamentos.ConsoleApp.ModuloRequisicao;
+using System.Collections;
 
 namespace ControleDeMedicamentos.ConsoleApp
 {
@@ -11,47 +12,30 @@ namespace ControleDeMedicamentos.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Menus menus = new Menus();
+           
 
-            RepositorioFuncionario repositorioFuncionario = new RepositorioFuncionario();
-            RepositorioFornecedor repositorioFornecedor = new RepositorioFornecedor();
-            RepositorioPaciente repositorioPaciente = new RepositorioPaciente();
-            RepositorioMedicamento repositorioMedicamento = new RepositorioMedicamento();
-            RepositorioRequisicao repositorioRequisicao = new RepositorioRequisicao();
-            RepositorioAquisicao repositorioAquisicao = new RepositorioAquisicao();
+            RepositorioFuncionario repositorioFuncionario = new RepositorioFuncionario(new ArrayList());
+            RepositorioFornecedor repositorioFornecedor = new RepositorioFornecedor(new ArrayList());
+            RepositorioPaciente repositorioPaciente = new RepositorioPaciente(new ArrayList());
+            RepositorioMedicamento repositorioMedicamento = new RepositorioMedicamento(new ArrayList());
+            RepositorioRequisicao repositorioRequisicao = new RepositorioRequisicao(new ArrayList());
+            RepositorioAquisicao repositorioAquisicao = new RepositorioAquisicao(new ArrayList());
 
-            TelaPaciente telaPaciente = new TelaPaciente();
-            TelaFuncionario telaFuncionario = new TelaFuncionario();
-            TelaFornecedor telaFornecedor = new TelaFornecedor();
-            TelaMedicamento telaMedicamento = new TelaMedicamento();
-            TelaRequisicao telaRequisicao = new TelaRequisicao();
-            TelaAquisicao telaAquisicao = new TelaAquisicao();
+            TelaPaciente telaPaciente = new TelaPaciente(repositorioPaciente);
+            TelaFuncionario telaFuncionario = new TelaFuncionario(repositorioFuncionario);
+            TelaFornecedor telaFornecedor = new TelaFornecedor(repositorioFornecedor);
+            TelaMedicamento telaMedicamento = new TelaMedicamento(repositorioMedicamento, repositorioFornecedor);
+            TelaRequisicao telaRequisicao = new TelaRequisicao(repositorioRequisicao, repositorioPaciente, repositorioMedicamento, repositorioFuncionario);
+            TelaAquisicao telaAquisicao = new TelaAquisicao(repositorioAquisicao, repositorioMedicamento, repositorioFornecedor, repositorioFuncionario);
 
-            telaPaciente.repositorioPaciente = repositorioPaciente;
-            telaFuncionario.repositorioFuncionario = repositorioFuncionario;
+            Menus menus = new Menus(telaPaciente, telaMedicamento, telaFornecedor, telaFuncionario, telaRequisicao, telaAquisicao);
 
-            telaMedicamento.repositorioMedicamento = repositorioMedicamento;
-            telaMedicamento.repositorioFornecedor = repositorioFornecedor;
-            telaMedicamento.repositorioMedicamento = repositorioMedicamento;
-
-            telaFornecedor.repositorioFornecedor = repositorioFornecedor;
-
-            telaRequisicao.repositorioRequisicao = repositorioRequisicao;
-            telaRequisicao.repositorioPaciente = repositorioPaciente;
-            telaRequisicao.repositorioMedicamento = repositorioMedicamento;
-            telaRequisicao.repositorioFuncionario = repositorioFuncionario;
-
-            telaAquisicao.repositorioAquisicao = repositorioAquisicao;
-            telaAquisicao.repositorioMedicamento = repositorioMedicamento;
-            telaAquisicao.repositorioFornecedor = repositorioFornecedor;
-            telaAquisicao.repositorioFuncionario = repositorioFuncionario;
-            
-            menus.telaFuncionario = telaFuncionario;
-            menus.telaRequisicao = telaRequisicao;
-            menus.telaPaciente = telaPaciente;
-            menus.telaAquisicao = telaAquisicao;
-            menus.telaMedicamento = telaMedicamento;
-            menus.telaFornecedor = telaFornecedor;
+            telaPaciente.nomeEntidade = "Paciente";
+            telaFuncionario.nomeEntidade = "Funcionario";
+            telaMedicamento.nomeEntidade = "Medicamento";
+            telaFornecedor.nomeEntidade = "Fornecedor";
+            telaRequisicao.nomeEntidade = "Requisição";
+            telaAquisicao.nomeEntidade = "Aquisições";
 
             menus.MenuPrincipal();
         }

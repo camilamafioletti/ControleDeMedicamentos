@@ -1,6 +1,8 @@
-﻿namespace ControleDeMedicamentos.ConsoleApp
+﻿using System.Collections;
+
+namespace ControleDeMedicamentos.ConsoleApp
 {
-    public class Entidade
+    public abstract class Entidade
     {
         public int id;
 
@@ -8,5 +10,7 @@
         {
             id = registroAtualizado.id;
         }
+
+        public abstract ArrayList Validar();
     }
 }

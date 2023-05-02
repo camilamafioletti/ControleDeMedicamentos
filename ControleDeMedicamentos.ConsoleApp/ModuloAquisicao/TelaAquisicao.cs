@@ -9,12 +9,43 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloAquisicao
     public class TelaAquisicao : Tela
     {
 
-        public RepositorioAquisicao repositorioAquisicao = null;
-        public RepositorioMedicamento repositorioMedicamento = null;
-        public RepositorioFornecedor repositorioFornecedor = null;
-        public RepositorioFuncionario repositorioFuncionario = null;
+        private RepositorioAquisicao repositorioAquisicao = null;
+        private RepositorioMedicamento repositorioMedicamento = null;
+        private RepositorioFornecedor repositorioFornecedor = null;
+        private RepositorioFuncionario repositorioFuncionario = null;
 
-        public string ApresentarMenuAquisicao()
+        public TelaAquisicao(RepositorioAquisicao repositorioAquisicao, RepositorioMedicamento repositorioMedicamento, RepositorioFornecedor repositorioFornecedor, RepositorioFuncionario repositorioFuncionario)
+        {
+            repositorio = repositorioAquisicao;
+            this.repositorioAquisicao = repositorioAquisicao;
+            this.repositorioMedicamento = repositorioMedicamento;
+            this.repositorioFornecedor = repositorioFornecedor;
+            this.repositorioFuncionario = repositorioFuncionario;
+
+        }
+
+        public override void InserirNovoRegistro()
+        {
+            bool temFuncionarios = repositorioFuncionario.TemRegistros();
+
+            if (temFuncionarios == false)
+            {
+                Mensagem("Cadastre ao menos um funcionário para cadastrar requisições de entrada", ConsoleColor.DarkYellow);
+                return;
+            }
+
+            bool temMedicamentos = repositorioMedicamento.TemRegistros();
+
+            if (temMedicamentos == false)
+            {
+                Mensagem("Cadastre ao menos um medicamento para cadastrar requisições de entrada", ConsoleColor.DarkYellow);
+                return;
+            }
+
+            base.InserirNovoRegistro();
+        }
+
+        public override string ApresentarMenu()
         {
             Console.Clear();
 
@@ -28,18 +59,9 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloAquisicao
             return opcaoMenu;
         }
 
-        public void InserirNovaAquisicao()
+        protected override void MostrarTabela(ArrayList listaAquisicao)
         {
-            Aquisicao novaAquisicao = ObterAquisicao();
 
-            repositorioAquisicao.Criar(novaAquisicao);
-
-            Mensagem("Medicamento criado com sucesso!", ConsoleColor.Green);
-        }
-
-        public void ListarAquisicao()
-        {
-            ArrayList listaAquisicao = repositorioAquisicao.SelecionarTodos();
 
             Console.Clear();
             Console.WriteLine("Histórico de aquisições:");
@@ -49,11 +71,7 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloAquisicao
             Console.WriteLine("-----------------------------------------------------------------------------------");
             Console.ResetColor();
 
-            if (listaAquisicao.Count == 0)
-            {
-                Mensagem("Nenhuma aquisição registrada!", ConsoleColor.DarkRed);
-                return;
-            }
+
 
             foreach (Aquisicao aquisicao in listaAquisicao)
             {
@@ -63,29 +81,7 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloAquisicao
             Console.ReadKey();
         }
 
-        public int ReceberIdAquisicao()
-        {
-            bool idInvalido;
-            int id;
-            do
-            {
-                Console.Write("Digite o id da aquisicao: ");
-                id = int.Parse(Console.ReadLine());
-
-                idInvalido = repositorioAquisicao.SelecionarId(id) == null;
-
-                if (idInvalido)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("id inválido, tente novamente");
-                    Console.ResetColor();
-                }
-            } while (idInvalido);
-
-            return id;
-        }
-
-        public Aquisicao ObterAquisicao()
+        protected override Entidade ObterRegistro()
         {
             Console.Write("Informe o id do fornecedor: ");
             int idFornecedor = int.Parse(Console.ReadLine());
@@ -97,7 +93,7 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloAquisicao
             int idFuncionario = int.Parse(Console.ReadLine());
 
             Console.Write("Informe a data da aquisição: ");
-            int dataAquisicao = int.Parse(Console.ReadLine());
+            DateTime dataAquisicao = DateTime.Parse(Console.ReadLine());
 
             Console.Write("Informe a quantidade de medicamento: ");
             int qntdMedicamento= int.Parse(Console.ReadLine());

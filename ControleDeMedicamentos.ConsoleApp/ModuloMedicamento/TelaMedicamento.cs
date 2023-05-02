@@ -1,8 +1,4 @@
-﻿using ControleDeMedicamentos.ConsoleApp;
-using ControleDeMedicamentos.ConsoleApp.ModuloFornecedor;
-using ControleDeMedicamentos.ConsoleApp.ModuloFuncionario;
-using ControleDeMedicamentos.ConsoleApp.ModuloPaciente;
-using ControleDeMedicamentos.ConsoleApp.ModuloRequisicao;
+﻿using ControleDeMedicamentos.ConsoleApp.ModuloFornecedor;
 using System.Collections;
 
 namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
@@ -12,14 +8,35 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
         public RepositorioMedicamento repositorioMedicamento = null;
         public RepositorioFornecedor repositorioFornecedor = null;
 
-        public string ApresentarMenuMedicamento()
+        public TelaMedicamento(RepositorioMedicamento repositorioMedicamento, RepositorioFornecedor repositorioFornecedor)
+        {
+            repositorio = repositorioMedicamento;
+            this.repositorioMedicamento = repositorioMedicamento;
+            this.repositorioFornecedor = repositorioFornecedor;
+        }
+
+        public override void InserirNovoRegistro()
+        {
+            bool temRegistros = repositorioFornecedor.TemRegistros();
+
+            if (temRegistros == false)
+            {
+                Mensagem("Cadastre ao menos um fornecedor para cadastrar medicamentos", ConsoleColor.DarkYellow);
+                return;
+            }
+
+            base.InserirNovoRegistro();
+        }
+
+        public override string ApresentarMenu()
         {
 
             Console.Clear();
 
             Console.WriteLine("(1) Adicionar medicamento");
             Console.WriteLine("(2) Visualizar medicamentos");
-            Console.WriteLine("(3) Visualizar relatorio de medicamentos");
+            Console.WriteLine("(3) Visualizar medicamentos em falta");
+            Console.WriteLine("(4) Visualizar medicamentos mais retirados");
             Console.WriteLine("(V) Voltar ao menu ");
             Console.Write("\nOpção:  ");
 
@@ -28,18 +45,8 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
             return opcaoMenu;
         }
 
-        public void InserirNovoMedicamento()
+        protected override void MostrarTabela(ArrayList listaMedicamentos)
         {
-            Medicamento novoMedicamento = ObterMedicamento();
-
-            repositorioMedicamento.Criar(novoMedicamento);
-
-            Mensagem("Medicamento criado com sucesso!", ConsoleColor.Green);
-        }
-
-        public void ListarMedicamento()
-        {
-            ArrayList listaMedicamentos = repositorioMedicamento.SelecionarTodos();
 
             Console.Clear();
             Console.WriteLine("Medicamentos registrados:");
@@ -49,12 +56,6 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
             Console.WriteLine("----------------------------------------------------------");
             Console.ResetColor();
 
-            if (listaMedicamentos.Count == 0)
-            {
-                Mensagem("Nenhum medicamento registrado!", ConsoleColor.DarkRed);
-                return;
-            }
-
             foreach (Medicamento medicamento in listaMedicamentos)
             {
                 Console.WriteLine("|{0,-3}|{1,-11}|{2,-13}|{3,-11}|", medicamento.id, medicamento.nomeMedicamento, medicamento.fornecedor.nome, medicamento.qntdDisponivel);
@@ -63,7 +64,7 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
             Console.ReadKey();
         }
 
-        public void ListarRelatorioMedicamento()
+        public void ListarRelatorioMedicamentoEmFalta()
         {
             ArrayList listaMedicamentos = repositorioMedicamento.SelecionarTodos();
 
@@ -88,29 +89,26 @@ namespace ControleDeMedicamentos.ConsoleApp.ModuloMedicamento
             Console.ReadKey();
         }
 
-        public int ReceberIdMedicamento()
+        public void VisualizarMedicamentosMaisRetirados()
         {
-            bool idInvalido;
-            int id;
-            do
+
+            ArrayList medicamentosMaisRetirados = repositorioMedicamento.SelecionarMedicamentosMaisRetirados();
+
+            if (medicamentosMaisRetirados.Count == 0)
             {
-                Console.Write("Digite o id do medicamento: ");
-                id = int.Parse(Console.ReadLine());
+                Mensagem("Nenhum registro cadastrado", ConsoleColor.DarkYellow);
+                return;
+            }
+            Console.WriteLine("Medicamentos mais retirados: \n");
 
-                idInvalido = repositorioMedicamento.SelecionarId(id) == null;
-
-                if (idInvalido)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("id inválido, tente novamente");
-                    Console.ResetColor();
-                }
-            } while (idInvalido);
-
-            return id;
+            foreach (Medicamento medicamento in medicamentosMaisRetirados)
+            {
+                Console.WriteLine(medicamento.nomeMedicamento);
+            }
+            Console.ReadKey();
         }
 
-        public Medicamento ObterMedicamento()
+        protected override Entidade ObterRegistro()
         {
             Console.Write("Informe o nome do medicamento: ");
             string nomeMedicamento = Console.ReadLine();
